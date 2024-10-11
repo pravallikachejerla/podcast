@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ podcast.title }}</h1>
+<p>Author: {{ podcast.author }}</p>
+<p>Category: {{ podcast.category }}</p>
+
+<h2>Analytics</h2>
+<canvas id="listenerChart"></canvas>
+
+<h2>Episodes</h2>
+<ul>
+{% for episode in podcast.episodes %}
+    <li>{{ episode.title }} ({{ episode.publish_date.strftime('%Y-%m-%d') }})</li>
+{% endfor %}
+</ul>
+
+<h2>SmartLinks</h2>
+<a href="{{ url_for('create_smartlink', podcast_id=podcast.id) }}" class="btn btn-primary mb-3">Create SmartLink</a>
+<ul>
+{% for smart_link in podcast.smart_links %}
+    <li>{{ request.host_url }}s/{{ smart_link.short_code }} (Clicks: {{ smart_link.clicks|length }})</li>
+{% endfor %}
+</ul>
+
+<script>
+var ctx = document.getElementById('listenerChart').getContext('2d');
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ dates| tojson }},
+        datasets: [{
+            label: 'Total Listeners',
+            data: {{ total_listeners|tojson }},
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+        }, {
+            label: 'New Listeners',
+            data: {{ new_listeners|tojson }},
+            borderColor: 'rgb(255, 99, 132)',
+            tension: 0.1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

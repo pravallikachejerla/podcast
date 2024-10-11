@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Dashboard</h1>
+<a href="{{ url_for('add_podcast') }}" class="btn btn-primary mb-3">Add Podcast</a>
+
+<div class="mb-3">
+    <div class="input-group">
+        <input type="text" id="podcast-search" class="form-control" placeholder="Search podcasts...">
+        <button class="btn btn-outline-secondary" type="button" id="search-button">
+            <i class="fas fa-search"></i> Search
+        </button>
+    </div>
+    <div id="search-results" class="list-group mt-2"></div>
+</div>
+
+<h2>Your Podcasts</h2>
+<div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+    {% for podcast in user_podcasts %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ podcast.title }}</h5>
+                <p class="card-text">{{ podcast.author }}</p>
+                <p class="card-text"><small class="text-muted">{{ podcast.category }}</small></p>
+                <a href="{{ url_for('podcast_detail', id=podcast.id) }}" class="btn btn-primary btn-sm">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<h2>Top Podcasts</h2>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for podcast in top_podcasts %}
+    <div class="col">
+        <div class="card h-100">
+            <img src="{{ podcast.image_url }}" class="card-img-top" alt="{{ podcast.title }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ podcast.title }}</h5>
+                <p class="card-text">{{ podcast.author }}</p>
+                <p class="card-text"><small class="text-muted">{{ podcast.category }}</small></p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+<script>
+const searchInput = document.getElementById('podcast-search');
+const searchButton = document.getElementById('search-button');
+const searchResults = document.getElementById('search-results');
+
+function performSearch() {
+    const query = searchInput.value.trim();
+    if (query.length > 2) {
+        fetch(`/search_podcasts?q=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                searchResults.innerHTML = data.map(podcast => `
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">${podcast.title}</h5>
+                            <small>${podcast.category}</small>
+                        </div>
+                        <p class="mb-1">${podcast.author}</p>
+                    </a>
+                `).join('');
+            });
+    } else {
+        searchResults.innerHTML = '';
+    }
+}
+
+searchButton.addEventListener('click', performSearch);
+searchInput.addEventListener('keyup', function(event) {
+    if (event.key === 'Enter') {
+        performSearch();
+    }
+});
+</script>
+{% endblock %}

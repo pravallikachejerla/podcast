@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Add Podcast</h1>
+<form method="POST" id="add-podcast-form">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.rss_feed.label(class="form-label") }}
+        {{ form.rss_feed(class="form-control") }}
+    </div>
+    <div class="mb-3">
+        {{ form.category.label(class="form-label") }}
+        {{ form.category(class="form-select") }}
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+
+<h2 class="mt-5">Top Podcasts</h2>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for podcast in top_podcasts[:9] %}
+    <div class="col">
+        <div class="card h-100">
+            <img src="{{ podcast.image_url }}" class="card-img-top" alt="{{ podcast.title }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ podcast.title }}</h5>
+                <p class="card-text">{{ podcast.author }}</p>
+                <button class="btn btn-primary btn-sm add-top-podcast" data-rss="{{ podcast.rss_feed }}">Add Podcast</button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+document.querySelectorAll('.add-top-podcast').forEach(item => {
+    item.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('rss_feed').value = this.getAttribute('data-rss');
+        document.getElementById('add-podcast-form').submit();
+    });
+});
+</script>
+{% endblock %}

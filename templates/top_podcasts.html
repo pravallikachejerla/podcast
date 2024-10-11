@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Top 100 Podcasts</h1>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for podcast in podcasts %}
+    <div class="col">
+        <div class="card h-100">
+            <img src="{{ url_for('podcast_image', filename=podcast['image_url']) }}" class="card-img-top" alt="{{ podcast['title'] }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ podcast['title'] }}</h5>
+                <p class="card-text">{{ podcast['author'] }}</p>
+                <p class="card-text"><small class="text-muted">{{ podcast['category'] }}</small></p>
+                <a href="{{ podcast['website'] }}" class="btn btn-primary" target="_blank">Visit Website</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

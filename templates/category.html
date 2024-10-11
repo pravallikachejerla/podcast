@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category }} Podcasts - Podcast Analytics{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">{{ category }} Podcasts</h1>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for podcast in podcasts %}
+    <div class="col">
+        <div class="card h-100">
+            <img src="{{ podcast.image_url }}" class="card-img-top" alt="{{ podcast.title }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ podcast.title }}</h5>
+                <p class="card-text">{{ podcast.author }}</p>
+                <p class="card-text"><small class="text-muted">{{ podcast.category }}</small></p>
+                <a href="{{ url_for('podcast_detail', id=podcast.id) }}" class="btn btn-primary">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="mt-4">
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Home</a>
+</div>
+{% endblock %}

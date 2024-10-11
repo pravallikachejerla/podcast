@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Create SmartLink for {{ podcast.title }}</h1>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.destination_url.label(class="form-label") }}
+        {{ form.destination_url(class="form-control") }}
+        {% for error in form.destination_url.errors %}
+        <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+<a href="{{ url_for('podcast_detail', id=podcast.id) }}" class="btn btn-secondary mt-3">Back to Podcast</a>
+{% endblock %}
